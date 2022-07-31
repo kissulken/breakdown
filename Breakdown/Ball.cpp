@@ -13,61 +13,6 @@ void Ball::Reset()
 	y = originalY;
 }
 
-void Ball::changeDirectionLogically(bool clockwise) 
-{
-		if (clockwise)
-		{
-			switch (direction)
-			{
-			case Constants::UPRIGHT:
-				direction = Constants::UPLEFT;
-				break;
-			case Constants::UPLEFT:
-				direction = Constants::DOWNLEFT;
-				break;
-			case Constants::DOWNLEFT:
-				direction = Constants::DOWNRIGHT;
-				break;
-			case Constants::DOWNRIGHT:
-				direction = Constants::UPRIGHT;
-				break;
-			}
-		}
-		else
-		{
-			switch (direction)
-			{
-			case Constants::UPRIGHT:
-				direction = Constants::DOWNRIGHT;
-				break;
-			case Constants::DOWNRIGHT:
-				direction = Constants::DOWNLEFT;
-				break;
-			case Constants::DOWNLEFT:
-				direction = Constants::UPLEFT;
-				break;
-			case Constants::UPLEFT:
-				direction = Constants::UPRIGHT;
-				break;
-			}
-		}
-}
-
-void Ball::randomUpDirection()
-{
-	direction = (Constants::BallDir)((rand() % 3) + 4);
-	
-}
-
-void Ball::randomDownDirection()
-{
-	direction = (Constants::BallDir)((rand() % 3) + 1);
-}
-
-void Ball::randomDirection()
-{
-	direction = (Constants::BallDir)((rand() % 6) + 1);
-}
 
 void Ball::Move()
 {	
@@ -83,12 +28,12 @@ void Ball::Move()
 
 	case Constants::UPLEFT:
 		y--;
-		x--;
+		x-=speed;
 		break;
 
 	case Constants::UPRIGHT:
 		y --;
-		x++;
+		x+= speed;
 		break;
 
 	case Constants::DOWN:
@@ -97,12 +42,12 @@ void Ball::Move()
 
 	case Constants::DOWNLEFT:
 		y ++;
-		x--;
+		x-=speed;
 		break;
 
 	case Constants::DOWNRIGHT:
 		y ++;
-		x ++;
+		x += speed;
 		break;
 
 	default:
@@ -124,9 +69,9 @@ void Ball::redraw_ball()
 	nav->textThrower({ x, y }, ' ');
 }
 
-void Ball::check_border_touch()
+void Ball::check_border_touch(std::shared_ptr<HPbar> hpbar, std::shared_ptr<CountdownBar> countdown)
 {
-	if (x < 2 || x > Constants::CONSOLE_WIDTH - 1) 
+	if (x < 2 || x > Constants::CONSOLE_WIDTH - 3) 
 	{
 		switch (direction)
 		{
@@ -146,7 +91,9 @@ void Ball::check_border_touch()
 	}
 	if (y > Constants::CONSOLE_HEIGHT - 2)
 	{
+		hpbar->updateValue();
 		Reset();
+		countdown->countDown();
 	}
 	if (y < 2)
 	{
@@ -164,31 +111,47 @@ void Ball::check_border_touch()
 
 void Ball::check_player_touch(std::shared_ptr<Platform> player)
 {
-	if (player->getX() + 7 == x && player->getY() == y + 1)
-		direction = Constants::UPLEFT;
-	else if (player->getX() + 8 == x && player->getY() == y + 1)
-		direction = Constants::UPRIGHT;
-	else if (player->getX() + 9 == x && player->getY() == y + 1)
-		direction = Constants::UPRIGHT;
+	if (player->getY() == y + 1)
+	{
+		for (int i = 0; i < Constants::PLATFORM_SIZE / 2 + 1; i++)
+		{
+			if (player->getX() + i - 1 == x)
+				direction = Constants::UPLEFT;
+		}
+		for (int i = 0; i < Constants::PLATFORM_SIZE / 2 + 1; i++)
+		{
+			if (player->getX() + i + Constants::PLATFORM_SIZE / 2 + 1 == x)
+				direction = Constants::UPRIGHT;
+		}
+	}
 }
 
-void Ball::check_block_touch(std::vector<std::shared_ptr<Block>> & blocks)
+void Ball::check_block_touch(std::vector<std::shared_ptr<Block>> & blocks, std::shared_ptr<PointBar> points)
 {
 	for (int i = 0; i < blocks.size(); i++)
 	{
-		if ((blocks[i]->getX() == x || blocks[i]->getX() + 1 == x) && blocks[i]->getY() == y - 2)
+		if (blocks[i]->getY() == y - 1)
 		{
-			blocks[i]->minusHP();
-			direction = Constants::DOWNLEFT;
-			if (blocks[i]->getHP() == 0)
-				blocks.erase(blocks.begin() + i);
-		}
-		if ((blocks[i]->getX() + 1 == x || blocks[i]->getX() + 1 == x) && blocks[i]->getY() == y - 2)
-		{
-			blocks[i]->minusHP();
-			direction = Constants::DOWNRIGHT;
-			if(blocks[i]->getHP() == 0)
-				blocks.erase(blocks.begin() + i);
+			for (int j = 0; j < Constants::BLOCK_WIDTH; j++)
+			{
+				if (blocks[i]->getX() + j == x)
+				{
+					blocks[i]->minusHP();
+					points->updateValue();
+					if (blocks[i]->getHP() == 0)
+					{
+						blocks.erase(blocks.begin() + i);
+					}
+					if (direction == Constants::UPRIGHT)
+					{
+						direction = Constants::DOWNRIGHT;
+					}
+					else
+					{
+						direction = Constants::DOWNLEFT;
+					}
+				}
+			}
 		}
 	}
 }

@@ -3,6 +3,7 @@
 class Constants
 {
 public:
+	enum WinConditions {LOGO, WIN, LOSE};
 	enum Directions {LeftB, RightB, D_B, Q_B, ENTER_B};
 	enum BlockSegregator { WhiteBlock, YellowBlock, RedBlock };
 	enum Buttons {A_BUTTON = 'a', D_BUTTON = 'd', Q_BUTTON = 'q', R_BUTTON = 'r', ENTER_BUTTON = '\r' };
@@ -22,7 +23,8 @@ public:
 	static const char BORDER_MATERIAL = ' ';
 	static const char PLAYER_MATERIAL = ' ';
 	static const char BALL_MATERIAL = 'o';
-	static const int PLATFORM_SIZE = 3;
+	static const int PLATFORM_SIZE = 6;
 	static const int BASIC_HP = 3;
 	static const int BASIC_POINTS = 0;
+	static const int PLATFORM_STEP = 3;
 };

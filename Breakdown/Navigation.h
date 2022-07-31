@@ -19,4 +19,5 @@ public:
     virtual Constants::Directions whichButtonIsPressed() = 0;
     virtual void SetCursor(const Points p) = 0;
     virtual void WindowInit() = 0;
+    virtual void sayIt(const std::string& s, Points p, Constants::Color text_color, Constants::Color bvackground_color) = 0;
 };

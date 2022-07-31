@@ -1,5 +1,14 @@
 #include "Console_Navigation.h"
 
+void Console_Navigation::sayIt(const std::string& s, Points p, Constants::Color text_color, Constants::Color bvackground_color)
+{
+    setColor(text_color, bvackground_color);
+    textThrower(p, s);
+    Sleep(2000);
+    setColor(Constants::Black);
+    textThrower(p, s);
+}
+
 void Console_Navigation::SetConsoleSize(int width, int height)
 {
     HWND console = GetConsoleWindow();

@@ -17,9 +17,9 @@ void Platform::clearPreviousPosition()
 
 void Platform::moveLeft()
 {
-	if (x > 1 + Constants::PLATFORM_SIZE / 2)
+	if (x > Constants::PLATFORM_STEP)
 	{
-		x-=Constants::PLATFORM_SIZE;
+		x-=Constants::PLATFORM_STEP;
 		clearPreviousPosition();
 		draw_player();
 	}	
@@ -27,9 +27,9 @@ void Platform::moveLeft()
 
 void Platform::moveRight()
 {
-	if (x < Constants::CONSOLE_WIDTH - Constants::PLATFORM_SIZE / 2 - 1)
+	if (x < Constants::CONSOLE_WIDTH - Constants::PLATFORM_STEP - Constants::PLATFORM_SIZE - 1)
 	{
-		x+= Constants::PLATFORM_SIZE;
+		x+= Constants::PLATFORM_STEP;
 		clearPreviousPosition();
 		draw_player();
 	}
@@ -40,6 +40,6 @@ void Platform::draw_player()
 	nav->setColor(Constants::Red);
 	for (int i = 0; i <= Constants::PLATFORM_SIZE; i++)
 	{
-		nav->textThrower({ x + 5 + i, y }, Constants::PLAYER_MATERIAL);
+		nav->textThrower({ x + i, y }, Constants::PLAYER_MATERIAL);
 	}
 }

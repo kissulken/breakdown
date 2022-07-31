@@ -14,9 +14,11 @@ class Block
 		void switchColor();
 	public:
 		Block(int _type, std::shared_ptr<INavigation> _nav, int _x, int _y);
+		~Block() { unSpawn(); };
 		int getX() { return x; };
 		int getY() { return y; };
 		int getHP() { return HP; };
 		void spawn();
+		void unSpawn();
 		void minusHP();
 };

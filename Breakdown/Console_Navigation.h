@@ -18,6 +18,7 @@ class Console_Navigation : public INavigation
         Constants::Directions whichButtonIsPressed() override;
         void SetCursor(const Points p) override;
         void WindowInit() override;
+        void sayIt(const std::string& s, Points p, Constants::Color text_color, Constants::Color bvackground_color);
     private:
         void SetConsoleSize(int width, int height);
         void removeCursor();
